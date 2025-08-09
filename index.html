@@ -1,86 +1,194 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DAMI'S BOT SPACE</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>THE BOT ERA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      color: #fff;
-      text-align: center;
+    :root{
+      --bg:#000;
+      --neon:#16ff00;
+      --muted:#4bff7a33;
+      --card-bg:rgba(0,0,0,0.45);
+      --glass: rgba(255,255,255,0.03);
     }
-    h1 {
-      font-size: 3rem;
-      margin-top: 30px;
-      text-shadow: 0 0 10px #00f5ff;
-    }
-    .bot-list {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px;
-    }
-    .bot-item {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-      transition: transform 0.2s ease-in-out;
-    }
-    .bot-item:hover {
-      transform: scale(1.02);
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background: #00f5ff;
-      border: none;
-      border-radius: 25px;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00f5ff;
-      transition: all 0.3s ease-in-out;
-    }
-    button:hover {
-      background: #fff;
-      box-shadow: 0 0 20px #00f5ff, 0 0 10px #00f5ff;
-    }
-    .details {
-      display: none;
-      margin-top: 15px;
-      font-size: 0.95rem;
-    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Share Tech Mono, monospace;background:var(--bg);color:var(--neon);}
+    /* canvas covers whole screen */
+    #matrix-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}/* main container */
+.wrap{position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:36px 18px}
+header{margin-top:18px;text-align:center}
+h1{font-family:Orbitron, sans-serif;font-size:clamp(28px,6vw,56px);letter-spacing:2px;margin:6px 0;color:var(--neon);text-shadow:0 0 18px rgba(22,255,0,0.1),0 0 36px rgba(22,255,0,0.06)}
+p.subtitle{margin:4px 0 18px;color:#8cff8f;opacity:0.9;font-size:14px}
+
+/* launcher container */
+.launcher{width:100%;max-width:980px;display:grid;grid-template-columns:1fr;gap:12px;padding:12px}
+@media(min-width:880px){.launcher{grid-template-columns:repeat(2,1fr);gap:18px}}
+
+.card{background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));border:1px solid rgba(22,255,0,0.06);backdrop-filter: blur(6px);padding:14px;border-radius:14px;display:flex;align-items:center;gap:12px;transition:transform .22s ease,box-shadow .22s}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,0.6);}
+
+.strip{flex:0 0 72px;height:72px;border-radius:10px;background:linear-gradient(90deg,rgba(0,0,0,0.4),rgba(0,0,0,0.25));display:flex;align-items:center;justify-content:center;padding:8px;position:relative;overflow:hidden}
+.strip::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(22,255,0,0.06),transparent);transform:translateX(-120%);animation:shine 3.6s linear infinite}
+@keyframes shine{to{transform:translateX(120%)}}
+
+.meta{flex:1;display:flex;flex-direction:column;gap:6px}
+.meta .name{font-size:18px;font-weight:700;color:var(--neon);letter-spacing:0.6px}
+.meta .desc{font-size:12px;color:#9cff9a;opacity:0.9}
+
+.actions{display:flex;gap:8px;align-items:center}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(22,255,0,0.12);background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(255,255,255,0.02));color:var(--neon);font-weight:700;text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(22,255,0,0.06)}
+.btn.ghost{background:transparent;border:1px dashed rgba(22,255,0,0.08);padding:10px}
+
+.badge{font-size:11px;padding:6px 8px;border-radius:999px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.02);color:#d6ffd6}
+
+footer{margin:26px 0 0;color:#9aff9a;font-size:12px;opacity:0.9}
+
+/* top bar */
+.topbar{position:fixed;left:12px;top:12px;z-index:4;display:flex;align-items:center;gap:8px}
+.logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#001100,#002200);display:flex;align-items:center;justify-content:center;border:1px solid rgba(22,255,0,0.06);box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.logo svg{filter:drop-shadow(0 3px 6px rgba(22,255,0,0.08))}
+
+/* small helper */
+.small{font-size:12px;color:#bfffbf}
+
+/* glass nav at bottom */
+.legend{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:var(--glass);padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);z-index:4;color:#cfffcc;font-size:13px}
+
   </style>
 </head>
 <body>
-  <h1>DAMI'S BOT SPACE 🤖</h1>  <div class="bot-list">
-    <div class="bot-item">
-      <h2>1. TANJIRO-MD</h2>
-      <button onclick="toggleDetails('tanjiro')">Show Details</button>
-      <div id="tanjiro" class="details">
-        <p>🔑 First generate your session ID here:</p>
-        <a href="https://arslan-md-web.onrender.com/" target="_blank">https://arslan-md-web.onrender.com/</a>
-        <p>📤 Now deploy on GitHub or Render</p>
-        <p>⭐ Fork & Star the repo</p>
-        <p>👤 Credits: ASLAN-MD, DAMINIXELLAOFFICIAL</p>
-        <a href="https://github.com/Nerdk-tech/TANJIRO-MD" target="_blank">TANJIRO-MD GitHub</a>
-      </div>
-    </div><div class="bot-item">
-  <h2>2. SILENT DROPPER V1</h2>
-  <button onclick="toggleDetails('silent')">Show Details</button>
-  <div id="silent" class="details">
-    <p>🪂 Deploy on Panel or <strong>bot-hosting.net</strong> with 25–50 coins</p>
-    <a href="https://www.mediafire.com/file/a1t2c48mdwq1qhu/SILENT_DROPPER_V1%25F0%259F%2592%25A5%25F0%259F%2592%25A5.zip/file" target="_blank">Download ZIP 🔥🔥</a>
-  </div>
-</div>
+  <canvas id="matrix-canvas"></canvas>  <div class="topbar">
+    <div class="logo" title="THE BOT ERA">
+      <!-- little chip icon -->
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="16" height="16" rx="3" stroke="#16ff00" stroke-width="1.2"/>
+        <rect x="8" y="8" width="8" height="8" rx="1" fill="#072"/>
+      </svg>
+    </div>
+    <div class="small">THE BOT ERA</div>
+  </div>  <div class="wrap">
+    <header>
+      <h1>THE BOT ERA</h1>
+      <p class="subtitle">All your bots in one moving launcher — click to deploy, generate session, or download</p>
+    </header><main class="launcher" id="launcher">
 
-  </div>  <script>
-    function toggleDetails(id) {
-      const el = document.getElementById(id);
-      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+  <!-- TANJIRO-MD -->
+  <article class="card">
+    <div class="strip">
+      <div class="badge">TANJIRO-MD</div>
+    </div>
+    <div class="meta">
+      <div class="name">TANJIRO-MD</div>
+      <div class="desc">Owner repo: Nerdk-tech — deploy to Render</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="https://github.com/Nerdk-tech/TANJIRO-M" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="https://arslan-md-web.onrender.com/" target="_blank" rel="noopener">Get Session ID</a>
+      <a class="btn" href="https://render.com" target="_blank" rel="noopener">Deploy</a>
+    </div>
+  </article>
+
+  <!-- SILENT DROPPER V1 -->
+  <article class="card">
+    <div class="strip">
+      <div class="badge">SILENT DROPPER V1</div>
+    </div>
+    <div class="meta">
+      <div class="name">SILENT DROPPER V1</div>
+      <div class="desc">Download zip + generate session + deploy to Bot Hosting</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="https://www.mediafire.com/file/a1t2c48mdwq1qhu/SILENT_DROPPER_V1%25F0%259F%2592%25A5%25F0%259F%2592%25A5.zip/file" target="_blank" rel="noopener">Download</a>
+      <a class="btn ghost" href="https://arslan-md-web.onrender.com/" target="_blank" rel="noopener">Get Session ID</a>
+      <a class="btn" href="https://bot-hosting.net/?aff=1337434275347431541" target="_blank" rel="noopener">Deploy</a>
+    </div>
+  </article>
+
+  <!-- SILENT DROPPER V2 -->
+  <article class="card">
+    <div class="strip">
+      <div class="badge">SILENT DROPPER V2</div>
+    </div>
+    <div class="meta">
+      <div class="name">SILENT DROPPER V2</div>
+      <div class="desc">Latest drop — zip download + session generator + deploy</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="https://www.mediafire.com/file/zcpq17lzgy0n7bv/SILENT_DROPPER_V2.zip/file" target="_blank" rel="noopener">Download</a>
+      <a class="btn ghost" href="https://arslan-md-web.onrender.com/" target="_blank" rel="noopener">Get Session ID</a>
+      <a class="btn" href="https://bot-hosting.net/?aff=1337434275347431541" target="_blank" rel="noopener">Deploy</a>
+    </div>
+  </article>
+
+  <!-- QUEEN DANI-MD -->
+  <article class="card">
+    <div class="strip">
+      <div class="badge">QUEEN DANI-MD</div>
+    </div>
+    <div class="meta">
+      <div class="name">QUEEN DANI-MD</div>
+      <div class="desc">Repo by Nerdk-tech — deploy to Render</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="https://github.com/Nerdk-tech/QUEEN-DANI-MD-" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="https://arslan-md-web.onrender.com/" target="_blank" rel="noopener">Get Session ID</a>
+      <a class="btn" href="https://render.com" target="_blank" rel="noopener">Deploy</a>
+    </div>
+  </article>
+
+</main>
+
+<footer>Made with ⚡ by DAMI • Keep your session IDs safe</footer>
+
+  </div>  <div class="legend">Click a bot → Download / Session → Deploy</div>  <script>
+    // Matrix background
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, cols, size, drops;
+    function resize(){
+      W = canvas.width = innerWidth;
+      H = canvas.height = innerHeight;
+      size = Math.max(12, Math.floor(Math.min(W, H) / 60));
+      cols = Math.floor(W / size);
+      drops = new Array(cols).fill(0).map(()=>Math.floor(Math.random()*H));
     }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const letters = 'abcdefghijklmnopqrstuvwxyz0123456789@$%&*<>/\\|:;';
+
+    function draw(){
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillRect(0,0,W,H);
+      ctx.font = size + 'px Share Tech Mono, monospace';
+      for(let i=0;i<cols;i++){
+        const x = i*size;
+        const y = drops[i]*size;
+        const text = letters.charAt(Math.floor(Math.random()*letters.length));
+        // main green head
+        ctx.fillStyle = 'rgba(22,255,0,0.95)';
+        ctx.fillText(text, x, y);
+        // faint tail
+        ctx.fillStyle = 'rgba(140,255,140,0.12)';
+        ctx.fillText(text, x, y - size*1.4);
+        drops[i]++;
+        if(drops[i]*size > H + Math.random()*10000) drops[i]=0;
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // small keyboard shortcut: press D to toggle dark/glow intensify
+    let intense=false;
+    window.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='d'){
+        intense = !intense; document.body.style.filter = intense? 'contrast(120%) saturate(140%)':'none';
+      }
+    });
+
   </script></body>
-</html>
+      </html>
